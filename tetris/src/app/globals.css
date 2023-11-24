@@ -1,29 +1,30 @@
-.board{
+.board {
   border: 2px solid black;
   margin: auto;
   width: fit-content;
 }
 
-.row{
+.row {
   display: flex;
 }
 
-.cell{
-border: 1px solid black;
-width: 30px;
-aspect-ratio: 1;
+.cell {
+  width: 30px;
+  height: 30px;
 }
 
-.cell.R{
+.cell.R {
   background-color: red;
 }
 
-.cell.V{
+.cell.V {
   background-color: white;
 }
-.cell.P{
+
+.cell.P {
   background-color: black;
 }
-.cell.C{
+
+.cell.C {
   background-color: blue;
 }

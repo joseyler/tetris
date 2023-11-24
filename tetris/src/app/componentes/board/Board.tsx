@@ -15,11 +15,11 @@ interface Props {
 
 function Board({ currentBoard }: Props) {
   return (
-    <div>
+    <div className="d-flex flex-column board">
       {currentBoard.map((row, rowIndex) => (
-        <div className="row" key={`${rowIndex}`}>
+        <div className="d-flex flex-row" key={`row${rowIndex}`}>
           {row.map((cell, colIndex) => (
-            <Cell type={cell} key={`${rowIndex}-${colIndex}`} />
+            <Cell type={cell} key={`cell${rowIndex}-${colIndex}`} />
           ))}
         </div>
       ))}
