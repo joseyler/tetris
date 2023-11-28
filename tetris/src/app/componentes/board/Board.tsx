@@ -1,16 +1,8 @@
+import { Block } from "@/app/model/Block";
 import Cell from "../cell/Cell";
 
-export enum Block {
-  R = "R",
-  C = "C",
-  P = "P",
-  V = "V",
-}
-
-export type cellOptions = Block;
-
 interface Props {
-  currentBoard: cellOptions[][];
+  currentBoard: Block[][];
 }
 
 function Board({ currentBoard }: Props) {

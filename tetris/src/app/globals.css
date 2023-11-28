@@ -15,16 +15,20 @@
 
 .cell.R {
   background-color: red;
+  border: outset 2px #ac2626;
 }
 
 .cell.V {
   background-color: white;
+  border: outset 2px #b5b5b5;
 }
 
 .cell.P {
   background-color: black;
+  border: outset 2px #202020;
 }
 
 .cell.C {
   background-color: blue;
+  border: outset 2px rgb(55, 55, 223)
 }
