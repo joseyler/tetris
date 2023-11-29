@@ -10,9 +10,21 @@ export class FichaCuadrado extends Ficha {
   }
 
   public puedeDibujarFicha(unaPosicion: Posicion, tablero: Block[][]): boolean {
-    throw new Error("Method not implemented.");
+    return unaPosicion.getX() >= 0 
+        && unaPosicion.getX() + 1 < tablero[0].length
+        && unaPosicion.getY() >= 0 
+        && unaPosicion.getY() + 1 < tablero.length
+        && tablero[unaPosicion.getY()][unaPosicion.getX()] == Block.V
+        && tablero[unaPosicion.getY()][unaPosicion.getX() + 1] == Block.V
+        && tablero[unaPosicion.getY() + 1][unaPosicion.getX()] == Block.V
+        && tablero[unaPosicion.getY() + 1][unaPosicion.getX() + 1] == Block.V
   }
+  
   public dibujarColorFicha(tablero: Block[][], bloque: Block): Block[][] {
-    throw new Error("Method not implemented.");
+    tablero[this.posicion.getY()][this.posicion.getX()] = bloque;
+    tablero[this.posicion.getY()][this.posicion.getX() + 1] = bloque;
+    tablero[this.posicion.getY() + 1][this.posicion.getX()] = bloque;
+    tablero[this.posicion.getY() + 1][this.posicion.getX() + 1] = bloque;
+    return tablero;
   }
 }

@@ -29,12 +29,13 @@ export class Juego {
   }
 
   timeoutSegundo():Block[][] {
+    this.fichaActiva.borrarFicha(this.tablero);
     const newPosicion = new Posicion(this.fichaActiva.getPosicion().getX(), this.fichaActiva.getPosicion().getY() + 1);
     if (this.fichaActiva.puedeDibujarFicha(newPosicion, this.tablero)) {
-      this.fichaActiva.borrarFicha(this.tablero);
       this.fichaActiva.getPosicion().setY(this.fichaActiva.getPosicion().getY() + 1);
       this.fichaActiva.dibujarFicha(this.tablero);
     } else {
+      this.fichaActiva.dibujarFicha(this.tablero);
       this.fichaActiva = this.proveedorFicha.getFicha();
       this.fichaActiva.dibujarFicha(this.tablero);
     }
