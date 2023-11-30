@@ -10,60 +10,84 @@ export default function Home() {
       .fill(null)
       .map(() => Array(12).fill(Block.V))
   );
-  const [intervaloTablero, setIntervaloTablero] = useState<any>(null);
-  const juego: Juego = new Juego(0, board);
-  /*   const [juegoTerminado, setJuegoTerminado] = useState<Boolean>(false); */
+  const [juegoIniciado, setJuegoIniciado] = useState<boolean>(false);
+  const [juegoFinalizado, setJuegoFinalizado] = useState<boolean>(false);
+  const [puntuacion, setPuntuacion] = useState<number>(0);
+
+  const actualizarTablero = (tablero: Block[][], puntos:number) => {
+    setBoard([...tablero]);
+    setPuntuacion(puntos);
+  }
+
+  const finJuego = (puntos:number) => {
+    setJuegoFinalizado(true);
+    setPuntuacion(puntos);
+  }
+
+  const juego: Juego = new Juego(0, board, actualizarTablero, finJuego);
 
   const iniciarJuego = () => {
-    const newBoard = juego.iniciar();
-    setBoard([...newBoard]);
+
+    juego.iniciar();
+    setJuegoIniciado(true);
   };
 
   const teclaPresionada = (e: Event) => {
     console.log(e.key);
     switch (e.key) {
       case "ArrowUp":
-        const newBoard = juego.rotarFicha();
-        setBoard([...newBoard]);
+        juego.rotarFicha();
         break;
-
       case "ArrowDown":
-        const newBoardDown = juego.bajarFicha();
-        setBoard([...newBoardDown]);
+        juego.bajarFicha();
         break;
       case "ArrowLeft":
-        const newBoardDownLeft = juego.moverFicha("izq");
-        setBoard([...newBoardDownLeft]);
+        juego.moverFicha("izq");
         break;
       case "ArrowRight":
-        const newBoardDownRight = juego.moverFicha("der");
-        setBoard([...newBoardDownRight]);
+        juego.moverFicha("der");
         break;
       default:
         break;
     }
   };
 
-  const timeoutSegundo = () => {
-    const newBoard = juego.timeoutSegundo(/* setJuegoTerminado */);
-    setBoard([...newBoard]);
-  };
-
   useEffect(() => {
+    // se ejecuta despues del primer render
     window.addEventListener("keyup", teclaPresionada);
-    const intervaloTablero = setInterval(() => {
-      timeoutSegundo();
-    }, 1000);
-    setIntervaloTablero(intervaloTablero);
-    iniciarJuego();
+
+    // la funcion retornada se ejecuta cuando se deja de usar el componente
+    return () => {
+      // libero al DOM de un listener que no va a estar mas presente
+      window.removeEventListener("keyup", teclaPresionada);
+    }
   }, []);
 
   return (
     <main>
-      <h1>Tetris</h1>
+      <div className="d-flex flex-row justify-content-center">
+        <h1>Tetris</h1>
+        </div>
       <div className="d-flex flex-row justify-content-center">
         <Board currentBoard={board} />
       </div>
+      {juegoFinalizado && (
+        <div className="d-flex flex-row justify-content-center mt-3">
+        <h1>Perdiste!!</h1>
+      </div>
+      )}
+      {!juegoIniciado && (
+        <div className="d-flex flex-row justify-content-center mt-3">
+          <button type="button" className="btn btn-info" onClick={() => iniciarJuego()}>
+            Iniciar Juego!
+          </button>
+        </div>
+      )}
+      {juegoIniciado && (
+        <div className="d-flex flex-row justify-content-center mt-3">
+          <label>Puntuacion actual:</label><span>{puntuacion}</span>
+        </div>
+      )}
     </main>
   );
 }

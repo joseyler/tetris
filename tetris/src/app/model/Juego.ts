@@ -11,52 +11,75 @@ export class Juego {
   private proveedorFicha: ProveedorFicha;
   private tablero: Block[][];
   private fichaActiva: Ficha;
+  private puntosActuales:number = 0;
+  private actualizarTablero:Function;
+  private finalizarJuego:Function;
+  private interval:any;
 
-  constructor(dificultad: number, tablero: Block[][]) {
+  constructor(dificultad: number, tablero: Block[][], actualizarTablero: Function,finalizarJuego: Function ) {
     this.dificultad = dificultad;
     this.proveedorFicha = new ProveedorFicha(this.dificultad);
     this.estado = -1;
     this.tablero = tablero;
     this.fichaActiva = this.proveedorFicha.getFicha();
+    this.actualizarTablero = actualizarTablero;
+    this.finalizarJuego = finalizarJuego;
   }
 
-  iniciar():Block[][] {
-    this.estado = 0;
+  iniciarTimeout = ():void => {
+    const intervaloTablero = setInterval(() => {
+      this.timeoutSegundo();
+    }, 1000);
+    this.interval = intervaloTablero;
+  }
+
+  iniciar():void {
+    this.puntosActuales = 0;
     if (this.fichaActiva.puedeDibujarFicha(this.fichaActiva.getPosicion(), this.tablero)) {
-      return this.fichaActiva.dibujarFicha(this.tablero);
+      this.fichaActiva.dibujarFicha(this.tablero);
     }
-    return this.tablero;
+    this.iniciarTimeout();
+    this.actualizarTablero(this.tablero, this.puntosActuales);
   }
 
-  timeoutSegundo(/* setJuegoTerminado :any */):Block[][] {
+  timeoutSegundo(/* setJuegoTerminado :any */):void {
     this.fichaActiva.borrarFicha(this.tablero);
     const newPosicion = new Posicion(this.fichaActiva.getPosicion().getX(), this.fichaActiva.getPosicion().getY() + 1);
     if (this.fichaActiva.puedeDibujarFicha(newPosicion, this.tablero)) {
       this.fichaActiva.getPosicion().setY(this.fichaActiva.getPosicion().getY() + 1);
       this.fichaActiva.dibujarFicha(this.tablero);
-    } else {/* 
-      setJuegoTerminado(true); */
-      this.fichaActiva.dibujarFicha(this.tablero);
-      this.fichaActiva = this.proveedorFicha.getFicha();
-      this.fichaActiva.dibujarFicha(this.tablero);
+      this.actualizarTablero(this.tablero, this.puntosActuales);
+    } else {
+      if (this.fichaActiva.getPosicion().getY() == 0) {
+        clearTimeout(this.interval);
+        this.finalizarJuego(this.puntosActuales);
+      } else {
+        this.fichaActiva.dibujarFicha(this.tablero);
+        setTimeout(() => {
+          this.evaluarEstadoTablero();
+        }, 200);
+        this.fichaActiva = this.proveedorFicha.getFicha();
+        this.fichaActiva.dibujarFicha(this.tablero);
+        this.actualizarTablero(this.tablero, this.puntosActuales);
+      }
     }
-    return this.tablero;
   }
 
-  rotarFicha():Block[][]{
+  rotarFicha():void{
     this.fichaActiva.borrarFicha(this.tablero);
     this.fichaActiva.rotarFicha();
     if(this.fichaActiva.puedeDibujarFicha(this.fichaActiva.getPosicion(), this.tablero)){
       this.fichaActiva.dibujarFicha(this.tablero);
+      this.actualizarTablero(this.tablero, this.puntosActuales);
     }
     else{
       this.fichaActiva.rotarFicha();
       this.fichaActiva.dibujarFicha(this.tablero);
+      this.actualizarTablero(this.tablero, this.puntosActuales);
     }
-    return this.tablero;
   }
 
-  bajarFicha():Block[][] {
+  bajarFicha():void {
     this.fichaActiva.borrarFicha(this.tablero);
     let newPosicion = new Posicion(this.fichaActiva.getPosicion().getX(), this.fichaActiva.getPosicion().getY() + 1);
     while (this.fichaActiva.puedeDibujarFicha(newPosicion, this.tablero)) {
@@ -64,11 +87,16 @@ export class Juego {
       newPosicion = new Posicion(this.fichaActiva.getPosicion().getX(), this.fichaActiva.getPosicion().getY() + 1);
     }
     this.fichaActiva.dibujarFicha(this.tablero);
-    return this.tablero;
+    this.actualizarTablero(this.tablero, this.puntosActuales);
+    clearInterval(this.interval);
+    setTimeout(() => {
+      this.evaluarEstadoTablero();
+      this.actualizarTablero(this.tablero, this.puntosActuales);
+      this.iniciarTimeout();
+    }, 200);
   }
 
-  moverFicha(lado:string):Block[][] {
-    
+  moverFicha(lado:string):void {
     this.fichaActiva.borrarFicha(this.tablero);
     const currentX = this.fichaActiva.getPosicion().getX();
     this.fichaActiva.getPosicion().setX(currentX+(lado == 'izq' ? -1 : 1));
@@ -78,8 +106,24 @@ export class Juego {
       this.fichaActiva.getPosicion().setX(currentX);
       this.fichaActiva.dibujarFicha(this.tablero);
     }
-    return this.tablero;
+    this.actualizarTablero(this.tablero, this.puntosActuales);
   }
 
+  evaluarEstadoTablero(): void {
+    const newTablero = this.tablero.filter((fila) => fila.findIndex((celda) => celda == Block.V) >= 0);
+    const cantidadEliminadas = this.tablero.length - newTablero.length;
+    if (cantidadEliminadas == 0) {
+      return;
+    } else {
+      this.puntosActuales += 12 * cantidadEliminadas;
+      const arregloCompletar = [];
+      for (let index = 0; index < cantidadEliminadas; index++) {
+        arregloCompletar.push(Array(12).fill(Block.V))
+      }
+      this.tablero = [...arregloCompletar, ...newTablero];
+      this.fichaActiva = this.proveedorFicha.getFicha();
+      this.actualizarTablero(this.tablero, this.puntosActuales);
+    }
+  }
 
 }

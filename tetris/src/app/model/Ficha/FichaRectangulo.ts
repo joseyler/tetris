@@ -41,10 +41,8 @@ export class FichaRectangulo extends Ficha {
         && tablero[unaPosicion.getY()][unaPosicion.getX()] == Block.V
         && tablero[unaPosicion.getY() + 1][unaPosicion.getX()] == Block.V
         && tablero[unaPosicion.getY() + 2][unaPosicion.getX()] == Block.V
-        && tablero[unaPosicion.getY() + 3][unaPosicion.getX()] == Block.V
         && tablero[unaPosicion.getY() + 1][unaPosicion.getX()+1] == Block.V
         && tablero[unaPosicion.getY() + 2][unaPosicion.getX()+1]  == Block.V
-        && tablero[unaPosicion.getY() + 3][unaPosicion.getX()+1] == Block.V
     }
   }
   public dibujarColorFicha(tablero: Block[][], bloque: Block): Block[][] {
