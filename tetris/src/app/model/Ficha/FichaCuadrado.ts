@@ -3,6 +3,9 @@ import { Ficha } from "./Ficha";
 import { Posicion } from "./Posicion";
 
 export class FichaCuadrado extends Ficha {
+  public rotarFicha(): void {
+    return;
+  }
   
   constructor(posicion: Posicion) {
     const estructuraCuadrado = [[true,true],[true,true]];

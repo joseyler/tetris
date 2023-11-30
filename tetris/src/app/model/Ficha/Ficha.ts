@@ -22,6 +22,18 @@ export abstract class Ficha {
 
   public abstract dibujarColorFicha(tablero:Block[][], bloque: Block):Block[][];
 
+/*   public MoverFichaIzq(tablero:Block[][], bloque: Block):Block[][] {
+    //la muevo
+    pregunto si la puedo dibujar 
+    si puedo dibujo 
+    sino no
+    devuelvo tablero
+
+  } */
+
+  public abstract rotarFicha():void;
+
+
   public dibujarFicha(tablero:Block[][]):Block[][] {
     return this.dibujarColorFicha(tablero, this.bloque);
   }

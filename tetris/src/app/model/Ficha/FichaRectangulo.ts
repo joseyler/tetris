@@ -3,9 +3,18 @@ import { Ficha } from "./Ficha";
 import { Posicion } from "./Posicion";
 
 export class FichaRectangulo extends Ficha {
-  
-  private orientacion = 'horizontal';
 
+  
+
+  private orientacion = 'horizontal';
+  
+  public rotarFicha(): void {
+    if(this.orientacion == 'horizontal'){
+      this.orientacion = 'vertical';
+    }else {
+      this.orientacion = 'horizontal';
+    }
+  }
   constructor(posicion: Posicion) {
     const estructuraCuadrado = [[true,true,true],[true,true,true]];
     super(posicion, estructuraCuadrado, Block.R);

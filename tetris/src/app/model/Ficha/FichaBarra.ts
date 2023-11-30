@@ -3,8 +3,16 @@ import { Ficha } from "./Ficha";
 import { Posicion } from "./Posicion";
 
 export class FichaBarra extends Ficha {
-    
+  
   private orientacion = 'horizontal';
+
+  public rotarFicha(): void {
+    if(this.orientacion == 'horizontal'){
+      this.orientacion = 'vertical';
+    }else {
+      this.orientacion = 'horizontal';
+    }
+  }
 
   constructor(posicion: Posicion) {
     const estructuraCuadrado = [[true,true,true, true]];
@@ -46,4 +54,5 @@ export class FichaBarra extends Ficha {
     }
     return tablero;
   }
+
 }
